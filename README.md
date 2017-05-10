@@ -1,6 +1,7 @@
 # ChromaKick
 Make videos where "ChromaKey-Green" areas get twirled 
 
+Click the thumbnail below to watch a demo of the result
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=U3W8ZWuc8gQ
 " target="_blank"><img src="http://img.youtube.com/vi/U3W8ZWuc8gQ/0.jpg" 
