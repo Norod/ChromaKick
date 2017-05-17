@@ -133,20 +133,36 @@ static CIKernel *_GSChromaKeyFilterKernel;
                                  valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
      */
     
-    CIImage *backgroundImage = [[[CIFilter filterWithName:@"CITwirlDistortion"
+    
+    CIImage *sunbeamsImage = [[[CIFilter filterWithName:@"CISunbeamsGenerator"
+                                          keysAndValues:
+                                kCIInputCenterKey, [CIVector vectorWithX:
+                                                    (CGRectGetWidth(imageExtent) * 0.5f)
+                                                                       Y:(CGRectGetHeight(imageExtent) * 0.5f)],
+                                @"inputColor", [CIColor colorWithRed:0.50f green:0.85f blue:0.00f],
+                                @"inputTime", @(tilteristic),
+                                @"inputSunRadius", @((MIN(CGRectGetWidth(imageExtent),
+                                                      CGRectGetHeight(imageExtent)) * tilteristic) * 0.25f), nil]
+                               valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
+    
+    CIImage *circularImage = [[[CIFilter filterWithName:@"CICircularWrap"
                                           keysAndValues:
                                 kCIInputCenterKey, [CIVector vectorWithX:
                                                     (CGRectGetWidth(imageExtent) * 0.5f)
                                                                        Y:(CGRectGetHeight(imageExtent) * 0.5f)],
                                 @"inputImage", inputImage,
-                                @"inputRadius",@(MIN(CGRectGetWidth(imageExtent),
-                                                     CGRectGetHeight(imageExtent)) * MIN(MAX(0.25f , tilteristic), 0.75f)),
-                                @"inputAngle", @(inputTime), nil]
+                                @"inputRadius", @((MIN(CGRectGetWidth(imageExtent),
+                                                       CGRectGetHeight(imageExtent)) * tilteristic) * 0.5f),
+                                  @"inputAngle",0.0f, nil]
                                valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
     
     
    
-    
+    CIImage *backgroundImage = [[[CIFilter filterWithName:@"CISourceOverCompositing"
+                                            keysAndValues:
+                                  @"inputImage", sunbeamsImage,
+                                  @"inputBackgroundImage", circularImage, nil]
+                                 valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
 
     CIKernelROICallback regionOfInterestCallback = ^CGRect(int index, CGRect destRect) {
         return ((index == 0)?(destRect):(CGRectNull));
