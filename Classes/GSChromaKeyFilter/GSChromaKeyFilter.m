@@ -98,71 +98,35 @@ static CIKernel *_GSChromaKeyFilterKernel;
 	// Create checkerboard image used as background for filter.
 	CGRect imageExtent = [inputImage extent];
     
-    /*
-    CIImage *sunbeamsImage = [[[CIFilter filterWithName:@"CISunbeamsGenerator"
-                                            keysAndValues:
-                                  kCIInputCenterKey, [CIVector vectorWithX:
-                                                      (CGRectGetWidth(imageExtent) * 0.5f)
-                                                                         Y:(CGRectGetHeight(imageExtent) * 0.5f)],
-                                  @"inputColor", [CIColor colorWithRed:0.50f green:0.85f blue:0.00f],
-                                  @"inputSunRadius",@(MIN(CGRectGetWidth(imageExtent), CGRectGetHeight(imageExtent)) * 0.10f),
-                                  @"inputTime", @(inputTime), nil]
-                                 valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
-    
-    CIImage *backgroundImage = [[[CIFilter filterWithName:@"CISourceOverCompositing"
-                                            keysAndValues:
-                                  @"inputImage", sunbeamsImage,
-                                  @"inputBackgroundImage", inputImage, nil]
-                                 valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
-    */
-    
-    /*
-	CIImage *checkboardImage = [[[CIFilter filterWithName:@"CICheckerboardGenerator"
-											keysAndValues:kCIInputCenterKey, [CIVector vectorWithX:(CGRectGetWidth(imageExtent) * 0.5f)
-																								 Y:(CGRectGetHeight(imageExtent) * 0.5f)],
-								  @"inputColor0", [CIColor colorWithRed:0.5f green:0.5f blue:0.5f],
-								  @"inputColor1", [CIColor colorWithRed:1.0f green:1.0f blue:1.0f],
-								  kCIInputWidthKey, @10.0,
-								  kCIInputSharpnessKey, @1.0, nil]
-								 valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
-    
-    CIImage *backgroundImage = [[[CIFilter filterWithName:@"CISourceOverCompositing"
-                                            keysAndValues:
-                                  @"inputImage", checkboardImage,
-                                  @"inputBackgroundImage", inputImage, nil]
-                                 valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
-     */
-    
-    
     CIImage *sunbeamsImage = [[[CIFilter filterWithName:@"CISunbeamsGenerator"
                                           keysAndValues:
                                 kCIInputCenterKey, [CIVector vectorWithX:
                                                     (CGRectGetWidth(imageExtent) * 0.5f)
                                                                        Y:(CGRectGetHeight(imageExtent) * 0.5f)],
-                                @"inputColor", [CIColor colorWithRed:0.50f green:0.85f blue:0.00f],
+                                @"inputColor", [CIColor colorWithRed:tilteristic green:0.50f blue:0.75f alpha:0.50f],
                                 @"inputTime", @(tilteristic),
                                 @"inputSunRadius", @((MIN(CGRectGetWidth(imageExtent),
                                                       CGRectGetHeight(imageExtent)) * tilteristic) * 0.25f), nil]
                                valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
     
-    CIImage *circularImage = [[[CIFilter filterWithName:@"CICircularWrap"
+    CIImage *backgroundImage = [[[CIFilter filterWithName:@"CISourceOverCompositing"
+                                            keysAndValues:
+                                  @"inputImage", sunbeamsImage,
+                                  @"inputBackgroundImage", inputImage, nil]
+                                 valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
+    
+    CIImage *TwirlledImage = [[[CIFilter filterWithName:@"CITwirlDistortion"
                                           keysAndValues:
                                 kCIInputCenterKey, [CIVector vectorWithX:
                                                     (CGRectGetWidth(imageExtent) * 0.5f)
                                                                        Y:(CGRectGetHeight(imageExtent) * 0.5f)],
-                                @"inputImage", inputImage,
+                                @"inputImage", backgroundImage,
                                 @"inputRadius", @((MIN(CGRectGetWidth(imageExtent),
-                                                       CGRectGetHeight(imageExtent)) * tilteristic) * 0.5f),
-                                  @"inputAngle",0.0f, nil]
+                                                       CGRectGetHeight(imageExtent)) * tilteristic) * tilteristic),
+                                  @"inputAngle",@(inputTime), nil]
                                valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
     
     
-   
-    CIImage *backgroundImage = [[[CIFilter filterWithName:@"CISourceOverCompositing"
-                                            keysAndValues:
-                                  @"inputImage", sunbeamsImage,
-                                  @"inputBackgroundImage", circularImage, nil]
-                                 valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
 
     CIKernelROICallback regionOfInterestCallback = ^CGRect(int index, CGRect destRect) {
         return ((index == 0)?(destRect):(CGRectNull));
@@ -173,7 +137,7 @@ static CIKernel *_GSChromaKeyFilterKernel;
                             roiCallback:regionOfInterestCallback
                             arguments:@[
                                         [CISampler samplerWithImage:inputImage],
-                                        [CISampler samplerWithImage:backgroundImage],
+                                        [CISampler samplerWithImage:TwirlledImage],
                                         [CIVector vectorWithX:[inputColor red]
                                                             Y:[inputColor green]
                                                             Z:[inputColor blue]
