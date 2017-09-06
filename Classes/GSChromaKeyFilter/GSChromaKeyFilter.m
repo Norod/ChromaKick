@@ -95,18 +95,19 @@ static CIKernel *_GSChromaKeyFilterKernel;
     
     
     CGFloat tilteristic = (fabs(inputTime)/6.28f)/2.0f;
-	// Create checkerboard image used as background for filter.
+	
 	CGRect imageExtent = [inputImage extent];
     
+    /*
     CIImage *sunbeamsImage = [[[CIFilter filterWithName:@"CISunbeamsGenerator"
                                           keysAndValues:
                                 kCIInputCenterKey, [CIVector vectorWithX:
-                                                    (CGRectGetWidth(imageExtent) * 0.5f)
-                                                                       Y:(CGRectGetHeight(imageExtent) * 0.5f)],
+                                                    (CGRectGetWidth(imageExtent) * 0.50f)
+                                                                       Y:(CGRectGetHeight(imageExtent) * 0.50f)],
                                 @"inputColor", [CIColor colorWithRed:tilteristic green:0.50f blue:0.75f alpha:0.50f],
                                 @"inputTime", @(tilteristic),
                                 @"inputSunRadius", @((MIN(CGRectGetWidth(imageExtent),
-                                                      CGRectGetHeight(imageExtent)) * tilteristic) * 0.25f), nil]
+                                                      CGRectGetHeight(imageExtent)) * tilteristic) * 0.10f), nil]
                                valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
     
     CIImage *backgroundImage = [[[CIFilter filterWithName:@"CISourceOverCompositing"
@@ -114,13 +115,14 @@ static CIKernel *_GSChromaKeyFilterKernel;
                                   @"inputImage", sunbeamsImage,
                                   @"inputBackgroundImage", inputImage, nil]
                                  valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
+     */
     
     CIImage *TwirlledImage = [[[CIFilter filterWithName:@"CITwirlDistortion"
                                           keysAndValues:
                                 kCIInputCenterKey, [CIVector vectorWithX:
                                                     (CGRectGetWidth(imageExtent) * 0.5f)
                                                                        Y:(CGRectGetHeight(imageExtent) * 0.5f)],
-                                @"inputImage", backgroundImage,
+                                @"inputImage", inputImage,
                                 @"inputRadius", @((MIN(CGRectGetWidth(imageExtent),
                                                        CGRectGetHeight(imageExtent)) * tilteristic) * tilteristic),
                                   @"inputAngle",@(inputTime), nil]
