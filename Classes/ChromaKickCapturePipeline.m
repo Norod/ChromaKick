@@ -123,6 +123,12 @@ typedef NS_ENUM( NSInteger, ChromaKickRecordingStatus )
 	[self teardownCaptureSession];
 }
 
+#pragma mark Chroma Kick Filter
+
+- (GSChromaKeyFilter *)chromaKickFilter {
+    return _renderer.chromaKickFilter;
+}
+
 #pragma mark Capture Session
 
 - (void)startRunning

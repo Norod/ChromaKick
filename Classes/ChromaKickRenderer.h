@@ -11,6 +11,8 @@
 #import <CoreMedia/CoreMedia.h>
 #import <CoreVideo/CoreVideo.h>
 
+@class GSChromaKeyFilter;
+
 @protocol ChromaKickRenderer <NSObject>
 
 @required
@@ -18,6 +20,8 @@
 /* Format/Processing Requirements */
 @property(nonatomic, readonly) BOOL operatesInPlace; // When YES the input pixel buffer is written to by the renderer instead of writing the result to a new pixel buffer.
 @property(nonatomic, readonly) FourCharCode inputPixelFormat; // One of 420f, 420v, or BGRA
+
+@property (nonatomic, readonly) GSChromaKeyFilter *chromaKickFilter;
 
 /* Resource Lifecycle */
 // Prepare and destroy expensive resources inside these callbacks.

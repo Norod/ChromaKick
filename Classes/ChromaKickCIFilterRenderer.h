@@ -9,6 +9,10 @@
 
 #import "ChromaKickRenderer.h"
 
+@class GSChromaKeyFilter;
+
 @interface ChromaKickCIFilterRenderer : NSObject <ChromaKickRenderer>
+
+@property (nonatomic, readonly) GSChromaKeyFilter *chromaKickFilter;
 
 @end

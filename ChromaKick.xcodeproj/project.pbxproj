@@ -13,7 +13,6 @@
 		1756C9D819BE5E1F0080DD55 /* ChromaKickViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F90DDED1395CAAA00125BDA /* ChromaKickViewController.m */; };
 		1756C9DA19BE5E1F0080DD55 /* ChromaKickCapturePipeline.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F90DE0F1395CD9C00125BDA /* ChromaKickCapturePipeline.m */; };
 		1756C9DC19BE5E1F0080DD55 /* MovieRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FF11C8A16A8779D00E14D71 /* MovieRecorder.m */; };
-		1756C9DD19BE5E1F0080DD55 /* OpenGLPixelBufferView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FF11C8C16A8779D00E14D71 /* OpenGLPixelBufferView.m */; };
 		1756C9E219BE5E1F0080DD55 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F096BF9157ED5110075E328 /* ImageIO.framework */; };
 		1756C9E419BE5E1F0080DD55 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F90DE0A1395CCF500125BDA /* CoreMedia.framework */; };
 		1756C9E519BE5E1F0080DD55 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F90DE081395CCEA00125BDA /* QuartzCore.framework */; };
@@ -31,6 +30,7 @@
 		1756C9F419BE5E1F0080DD55 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7214DBCD182AEF8900EA3F99 /* Images.xcassets */; };
 		1756C9FC19BE5EE10080DD55 /* ChromaKickCIFilterRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1756C9D319BE5E080080DD55 /* ChromaKickCIFilterRenderer.m */; };
 		17E79A3619C8AD8A004B709D /* ShaderUtilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 6FF11C9316A877B100E14D71 /* ShaderUtilities.c */; };
+		E8A32DD0201E1FBC00BDA3ED /* OpenGLPixelBufferView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FF11C8C16A8779D00E14D71 /* OpenGLPixelBufferView.m */; };
 		E8D57B511EC2049B00B21CA5 /* GSChromaKeyFilter.cikernel in Resources */ = {isa = PBXBuildFile; fileRef = E8D57B4E1EC2049B00B21CA5 /* GSChromaKeyFilter.cikernel */; };
 		E8D57B521EC2049B00B21CA5 /* GSChromaKeyFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D57B501EC2049B00B21CA5 /* GSChromaKeyFilter.m */; };
 /* End PBXBuildFile section */
@@ -308,6 +308,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8A32DD0201E1FBC00BDA3ED /* OpenGLPixelBufferView.m in Sources */,
 				1756C9D619BE5E1F0080DD55 /* main.m in Sources */,
 				1756C9D719BE5E1F0080DD55 /* ChromaKickAppDelegate.m in Sources */,
 				1756C9D819BE5E1F0080DD55 /* ChromaKickViewController.m in Sources */,
@@ -315,7 +316,6 @@
 				E8D57B521EC2049B00B21CA5 /* GSChromaKeyFilter.m in Sources */,
 				1756C9DC19BE5E1F0080DD55 /* MovieRecorder.m in Sources */,
 				17E79A3619C8AD8A004B709D /* ShaderUtilities.c in Sources */,
-				1756C9DD19BE5E1F0080DD55 /* OpenGLPixelBufferView.m in Sources */,
 				1756C9FC19BE5EE10080DD55 /* ChromaKickCIFilterRenderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -10,6 +10,8 @@
 
 #import <AVFoundation/AVFoundation.h>
 
+@class GSChromaKeyFilter;
+
 @protocol ChromaKickCapturePipelineDelegate;
 
 @interface ChromaKickCapturePipeline : NSObject 
@@ -34,6 +36,8 @@
 // Stats
 @property(atomic, readonly) float videoFrameRate;
 @property(atomic, readonly) CMVideoDimensions videoDimensions;
+
+@property (nonatomic, readonly) GSChromaKeyFilter *chromaKickFilter;
 
 @end
 

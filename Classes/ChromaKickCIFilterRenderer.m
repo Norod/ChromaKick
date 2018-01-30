@@ -12,7 +12,7 @@
 @interface ChromaKickCIFilterRenderer ()
 {
 	CIContext *_ciContext;
-	CIFilter *_rosyFilter;
+	CIFilter *_chromaKickFilter;
 	CGColorSpaceRef _rgbColorSpace;
 	CVPixelBufferPoolRef _bufferPool;
 	CFDictionaryRef _bufferPoolAuxAttributes;
@@ -23,11 +23,19 @@
 
 @implementation ChromaKickCIFilterRenderer
 
-#pragma mark API
+@dynamic chromaKickFilter;
+
+#pragma mark init/dealloc
 
 - (void)dealloc
 {
 	[self deleteBuffers];
+}
+
+#pragma mark API
+
+- (GSChromaKeyFilter*)chromaKickFilter {
+    return (GSChromaKeyFilter*)_chromaKickFilter;
 }
 
 #pragma mark ChromaKickRenderer
@@ -56,17 +64,18 @@
     EAGLContext *eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     _ciContext = [CIContext contextWithEAGLContext:eaglContext options:@{ kCIContextWorkingColorSpace : [NSNull null] } ];
     
-    _rosyFilter = [CIFilter filterWithName:@"GSChromaKeyFilter"];
-    [_rosyFilter setName:@"chromaKeyFilter"];
+    _chromaKickFilter = [CIFilter filterWithName:@"GSChromaKeyFilter"];
+    [_chromaKickFilter setValue:@(eChromaKickEffectType_CircularWrap) forKey:kCIInputChromaKickEffect];
+    [_chromaKickFilter setName:@"chromaKeyFilter"];
     
     CIColor* chromaKeyColor = [CIColor colorWithRed:0.0f green:0.70f blue:0.25f alpha:1.0f];
-    [_rosyFilter setValue:chromaKeyColor forKey:kCIInputColorKey];
+    [_chromaKickFilter setValue:chromaKeyColor forKey:kCIInputColorKey];
     
     
     /*
-     _rosyFilter = [CIFilter filterWithName:@"CIColorMatrix"];
+     _chromaKickFilter = [CIFilter filterWithName:@"CIColorMatrix"];
      CGFloat greenCoefficients[4] = { 0, 0, 0, 0 };
-     [_rosyFilter setValue:[CIVector vectorWithValues:greenCoefficients count:4] forKey:@"inputGVector"];
+     [_chromaKickFilter setValue:[CIVector vectorWithValues:greenCoefficients count:4] forKey:@"inputGVector"];
      */
 }
 
@@ -82,8 +91,8 @@
 
 	CIImage *sourceImage = [[CIImage alloc] initWithCVPixelBuffer:pixelBuffer options:nil];
 	
-	[_rosyFilter setValue:sourceImage forKey:kCIInputImageKey];
-	CIImage *filteredImage = [_rosyFilter valueForKey:kCIOutputImageKey];
+	[_chromaKickFilter setValue:sourceImage forKey:kCIInputImageKey];
+	CIImage *filteredImage = [_chromaKickFilter valueForKey:kCIOutputImageKey];
 	
 	err = CVPixelBufferPoolCreatePixelBuffer( kCFAllocatorDefault, _bufferPool, &renderedOutputPixelBuffer );
 	if ( err ) {
@@ -160,7 +169,7 @@ bail:
 	}
 	
 	_ciContext = nil;
-	_rosyFilter = nil;
+	_chromaKickFilter = nil;
 }
 
 static CVPixelBufferPoolRef createPixelBufferPool( int32_t width, int32_t height, OSType pixelFormat, int32_t maxBufferCount )

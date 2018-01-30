@@ -48,9 +48,18 @@
 #import <QuartzCore/QuartzCore.h>
 #import <CoreImage/CoreImage.h>
 
+extern NSString* const kCIInputChromaKickEffect;
+
+typedef NS_ENUM(NSUInteger, EChromaKickEffectType) {
+    eChromaKickEffectType_Checkers,
+    eChromaKickEffectType_TwirlDistortion,
+    eChromaKickEffectType_CircularWrap,
+};
+
 @interface GSChromaKeyFilter : CIFilter
 {
 	CIImage *inputImage;
 	CIColor *inputColor;
+    NSNumber *inputChromaKickEffect;
 }
 @end

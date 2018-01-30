@@ -50,6 +50,8 @@
 
 #define GSChromaKeyFilter_DEFAULT_COLOR [CIColor colorWithRed:0.0f green:1.0f blue:0.0f alpha:1.0f]
 
+NSString* const kCIInputChromaKickEffect = @"inputChromaKickEffect";
+
 @implementation GSChromaKeyFilter
 
 static CIKernel *_GSChromaKeyFilterKernel;
@@ -117,16 +119,55 @@ static CIKernel *_GSChromaKeyFilterKernel;
                                  valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
      */
     
-    CIImage *TwirlledImage = [[[CIFilter filterWithName:@"CITwirlDistortion"
-                                          keysAndValues:
-                                kCIInputCenterKey, [CIVector vectorWithX:
-                                                    (CGRectGetWidth(imageExtent) * 0.5f)
-                                                                       Y:(CGRectGetHeight(imageExtent) * 0.5f)],
-                                @"inputImage", inputImage,
-                                @"inputRadius", @((MIN(CGRectGetWidth(imageExtent),
-                                                       CGRectGetHeight(imageExtent)) * tilteristic) * tilteristic),
+    CIImage *chromaKickEffect = nil;
+    NSString *filterName = nil;
+    
+    //CISunbeamsGenerator
+    
+    EChromaKickEffectType effectType = [inputChromaKickEffect integerValue];
+    
+    switch (effectType) {
+        default:
+        case eChromaKickEffectType_Checkers:
+            filterName = @"CICheckerboardGenerator";
+            break;
+        case eChromaKickEffectType_TwirlDistortion:
+            filterName = @"CITwirlDistortion";
+            break;
+        case eChromaKickEffectType_CircularWrap:
+            filterName = @"CICircularWrap";
+            break;
+    }
+    
+    switch (effectType) {
+        default:
+        case eChromaKickEffectType_Checkers:
+            chromaKickEffect = [[[CIFilter filterWithName:filterName
+                         keysAndValues:
+               kCIInputCenterKey, [CIVector vectorWithX:
+                                   (CGRectGetWidth(imageExtent) * 0.50f)
+                                                      Y:(CGRectGetHeight(imageExtent) * 0.50f)],
+               @"inputColor0", [CIColor colorWithRed:1.0 green:1.0f blue:1.9f alpha:1.0f],
+               @"inputColor1", [CIColor colorWithRed:0.0 green:0.0f blue:0.0f alpha:1.0f],
+               @"inputWidth", @(MIN(MAX(20.0f, CGRectGetHeight(imageExtent) * tilteristic),80.0f)), nil]
+              valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
+            break;
+        case eChromaKickEffectType_TwirlDistortion:
+        case eChromaKickEffectType_CircularWrap:
+            chromaKickEffect = [[[CIFilter filterWithName:filterName
+                                            keysAndValues:
+                                  kCIInputCenterKey, [CIVector vectorWithX:
+                                                      (CGRectGetWidth(imageExtent) * 0.5f)
+                                                                         Y:(CGRectGetHeight(imageExtent) * 0.5f)],
+                                  @"inputImage", inputImage,
+                                  @"inputRadius", @((MIN(CGRectGetWidth(imageExtent),
+                                                         CGRectGetHeight(imageExtent)) * tilteristic) * tilteristic),
                                   @"inputAngle",@(inputTime), nil]
-                               valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
+                                 valueForKey:kCIOutputImageKey] imageByCroppingToRect:imageExtent];
+            break;
+    }
+    
+    
     
     
 
@@ -139,7 +180,7 @@ static CIKernel *_GSChromaKeyFilterKernel;
                             roiCallback:regionOfInterestCallback
                             arguments:@[
                                         [CISampler samplerWithImage:inputImage],
-                                        [CISampler samplerWithImage:TwirlledImage],
+                                        [CISampler samplerWithImage:chromaKickEffect],
                                         [CIVector vectorWithX:[inputColor red]
                                                             Y:[inputColor green]
                                                             Z:[inputColor blue]
@@ -154,7 +195,13 @@ static CIKernel *_GSChromaKeyFilterKernel;
 {
     return @{kCIInputColorKey : @{kCIAttributeClass : [CIColor class],
                                   kCIAttributeDefault : GSChromaKeyFilter_DEFAULT_COLOR,
-                                  kCIAttributeType : kCIAttributeTypeOpaqueColor}};
+                                  kCIAttributeType : kCIAttributeTypeOpaqueColor},
+             kCIInputChromaKickEffect : @{kCIAttributeClass : [NSNumber class],
+                                  kCIAttributeName : @"ChromaKickEffectType",
+                                  kCIAttributeDefault : @(eChromaKickEffectType_Checkers),
+                                  kCIAttributeType : kCIAttributeTypeInteger}
+             
+             };
 }
 
 - (NSDictionary *)customAttributes
